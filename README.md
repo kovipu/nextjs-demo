@@ -5,7 +5,7 @@ This is a quick demo of Next.js for a tech talk.
 
 For this demo you will need
 * A computer
-* Node JS 16<
+* Node.js 16<
 
 ## Initialize a Next.js project
 
@@ -55,10 +55,10 @@ Let's build an API route that queries our friends from the database and returns 
 Add the following to `pages/api/hello.js`
 
 ```
-import client from '../../_db';
+import db from '../../_db';
 
 export default async function handler(req, res) {
-  const data = await client.query('SELECT * from friend;');
+  const data = await db.query('SELECT * from friend;');
 
   res.status(200).json(data.rows);
 }
@@ -94,3 +94,40 @@ export default function ApiRoute() {
 ```
 Now we should see a new page at `/api-route` showing our implementation!
 
+## Custom Next functions for data fetching
+
+Next adds very unique functions that can be used to run code on the server-side.
+Depending on your choice, the code can be run either at build time or run time.
+
+Create a file `pages/static-props.js` with the following content:
+```
+import db from '../_db';
+
+export default function StaticProps({ friends }) {
+  return (
+    <div>
+      <h1>Static Props example</h1>
+      <ul>
+        {friends.map(friend => (
+          <li key={friend.id}>{friend.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export async function getStaticProps() {
+  const data = await db.query('SELECT * FROM friend;');
+
+  return {
+    props: {
+      friends: data.rows
+    },
+  };
+}
+```
+
+We should now have a new page at `/static-props` with the outcome!
+
+You can also do the same with the difference of replacing
+`getStaticProps` with `getServerSideProps`.
