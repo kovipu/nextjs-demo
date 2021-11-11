@@ -13,7 +13,7 @@ export default function StaticProps({ friends }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const data = await db.query('SELECT * FROM friend;');
 
   return {

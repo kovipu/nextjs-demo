@@ -131,3 +131,42 @@ We should now have a new page at `/static-props` with the outcome!
 
 You can also do the same with the difference of replacing
 `getStaticProps` with `getServerSideProps`.
+
+## TODO: React Server Components
+
+React Server Components allow us to render everything, including the components
+themselves, on the server. This is fundamentally different from server-side 
+rendering where you're pre-generating HTML on the server.
+
+Make sure we have alpha version of React installed.
+```
+npm install next@latest react@alpha react-dom@alpha
+```
+
+Enable React Server Components by adding the following to your `next.config.js`:
+```
+module.exports = {
+  experimental: {
+    concurrentFeatures: true,
+    serverComponents: true,
+  },
+}
+```
+
+## WIP: Middleware
+
+Middleware enables you to use code over configuration. This gives you full 
+flexibility in Next.js, because you can run code before a request is completed. 
+Based on the user's incoming request, you can modify the response by rewriting, 
+redirecting, adding headers, or even streaming HTML.
+
+Place the following in `pages/_middleware.js`
+```
+import { NextResponse } from 'next/server';
+
+export function middleware(req, ev) {
+  console.log("received request: ", req);
+
+  return NextResponse.next();
+}
+```
