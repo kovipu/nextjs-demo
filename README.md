@@ -27,7 +27,7 @@ A few cool things about Next:
 
 Spin up the included database with `docker-compose up`
 
-Install node-pg by running `npm install pg`
+Install node-pg by running `npm install pg pg-native`
 
 Create a file `/_db.js` with the following content:
 ```
@@ -72,11 +72,11 @@ import { useState, useEffect } from 'react';
 export default function ApiRoute() {
   const [friends, setFriends] = useState([]);
 
-  useEffect(async () => {
-    const res = await fetch('/api/hello');
-    const data = await res.json();
-    setFriends(data);
-  }, []);
+  useEffect(() => {
+    fetch('/api/hello')
+      .then(res => res.json())
+      .then(data => setFriends(data));
+  }, [])
 
   return (
     <div>
@@ -93,7 +93,7 @@ export default function ApiRoute() {
 }
 ```
 Now we should see a new page at `/api-route` showing our implementation!
-
+
 ## Custom Next functions for data fetching
 
 Next adds very unique functions that can be used to run code on the server-side.
@@ -132,26 +132,30 @@ We should now have a new page at `/static-props` with the outcome!
 You can also do the same with the difference of replacing
 `getStaticProps` with `getServerSideProps`.
 
-## TODO: React Server Components
+## React Server Components
 
 React Server Components allow us to render everything, including the components
 themselves, on the server. This is fundamentally different from server-side 
 rendering where you're pre-generating HTML on the server.
 
-Make sure we have alpha version of React installed.
+Make sure we have the canary version of Next installed.
 ```
-npm install next@latest react@alpha react-dom@alpha
+npm install next@canary
 ```
 
 Enable React Server Components by adding the following to your `next.config.js`:
 ```
 module.exports = {
   experimental: {
-    concurrentFeatures: true,
+    runtime: 'nodejs',
     serverComponents: true,
   },
 }
 ```
+
+Rename `pages/static-props.js` to `pages/static-props.server.js` and see what happens.
+React Server Components are a new feature introduced in React 18 and even newer to Next.js.
+Not mature.
 
 ## WIP: Middleware
 
